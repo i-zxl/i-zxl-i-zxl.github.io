@@ -1,12 +1,12 @@
-# Kasper
+# i-zxl
 
 > This is a port of Ghost's default theme [Casper](https://github.com/tryghost/casper) for Jekyll. 
 Feel free to fork, change, modify and re-use it.
 
 ## Installation
 
-    git clone https://github.com/rosario/kasper.git
-    cd kasper
+    git clone https://github.com/i-zxl/i-zxl.github.io.git
+    cd i-zxl.github.io
     gem install jekyll
     gem install pygments.rb
 
