@@ -9,8 +9,7 @@ paginate: 15
 baseurl: /
 domain_name: 'http://i-zxl.github.io/'
 google_analytics: 'UA-XXXXXXXX-X'
-gems: [jekyll-paginate]
-
+plugins: [jekyll-paginate]
 # Details for the RSS feed generator
 url:            'http://i-zxl.github.io'
 author:         'Xinglai Zhao'
