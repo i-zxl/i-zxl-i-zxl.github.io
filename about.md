@@ -2,5 +2,4 @@
 layout: page
 title: About me 
 ---
-
-This is a static page. It could be an 'about page' if you'd like.
+一点资讯前端开发工程师
