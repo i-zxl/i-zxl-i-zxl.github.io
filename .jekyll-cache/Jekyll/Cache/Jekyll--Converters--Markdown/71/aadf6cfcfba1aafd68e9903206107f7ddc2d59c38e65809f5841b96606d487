@@ -1,14 +1,6 @@
----
-layout: post
-title: "Vuex store源码分析"
-date: 2019-09-04 15:00:00
-categories: Vuex Store
----
+I"�<p>vuex 的 github ，入口文件展示给我们的就是核心Store和常用的工具方法，</p>
 
-vuex 的 github ，入口文件展示给我们的就是核心Store和常用的工具方法，
-
-```js
-export default {
+<pre><code class="language-js">export default {
     Store,
     install,
     version: '__VERSION__',
@@ -19,18 +11,16 @@ export default {
     createNamespacedHelpers
 }
 
-```
-## vuex挂载
+</code></pre>
+<h2 id="vuex挂载">vuex挂载</h2>
 
-vuex 是通过插件的方式将vuex实例挂载到vue上，
-```js
-  Vue.use(Vuex);
-```
+<p>vuex 是通过插件的方式将vuex实例挂载到vue上，</p>
+<pre><code class="language-js">  Vue.use(Vuex);
+</code></pre>
 
-install 中vue 1.x 和 2.x 注入store方式稍微有点区别：1.x 使用init，2.x使用vue混入方式,在beforeCreate生命周期中影响每个组件。
+<p>install 中vue 1.x 和 2.x 注入store方式稍微有点区别：1.x 使用init，2.x使用vue混入方式,在beforeCreate生命周期中影响每个组件。</p>
 
-```js
-
+<pre><code class="language-js">
 // 这个函数实现保证将store影响到每个组件，并且保证store的唯一性，进行集中托管
 function vuexInit () {
     const options = this.$options
@@ -40,22 +30,21 @@ function vuexInit () {
         ? options.store()
         : options.store
     // 非root 时获取父组件的$store给当前组建的$store
-    } else if (options.parent && options.parent.$store) {
+    } else if (options.parent &amp;&amp; options.parent.$store) {
       this.$store = options.parent.$store
     }
   }
 
-```
+</code></pre>
 
-## Store 
+<h2 id="store">Store</h2>
 
-进入store文件，我们看一下状态管理类Store的实现
+<p>进入store文件，我们看一下状态管理类Store的实现</p>
 
-```js
-export class Store {
+<pre><code class="language-js">export class Store {
   constructor (options = {}) {
     // 如果之前没有挂载到Vue, 自动挂载一次
-    if (!Vue && typeof window !== 'undefined' && window.Vue) {
+    if (!Vue &amp;&amp; typeof window !== 'undefined' &amp;&amp; window.Vue) {
       install(window.Vue)
     }
 
@@ -123,7 +112,7 @@ export class Store {
     // 同时挂载Getter到计算属性
     resetStoreVM(this, state)
     // apply plugins
-    plugins.forEach(plugin => plugin(this))
+    plugins.forEach(plugin =&gt; plugin(this))
 
     const useDevtools = options.devtools !== undefined ? options.devtools : Vue.config.devtools
     // 将vuex数据变化展示到vue-devtools
@@ -133,20 +122,18 @@ export class Store {
   }
   ... 
 }
-```
+</code></pre>
 
-### commit实现
+<h3 id="commit实现">commit实现</h3>
 
-组件中使用commit传递两个参数，type和payload,例如：
-```js
-  this.$store.commit('updateState', {
+<p>组件中使用commit传递两个参数，type和payload,例如：</p>
+<pre><code class="language-js">  this.$store.commit('updateState', {
     state: true
   })
-```
-源码中commit的实现也是比较简单的，从收集的mutations中找出对应的事件类型，依次触发，然后再执行mutations中的订阅函数
+</code></pre>
+<p>源码中commit的实现也是比较简单的，从收集的mutations中找出对应的事件类型，依次触发，然后再执行mutations中的订阅函数</p>
 
-```js
-
+<pre><code class="language-js">
 commit (_type, _payload, _options) {
   // 格式校验
   const {
@@ -166,17 +153,17 @@ commit (_type, _payload, _options) {
   }
   //依次触发commit, 需要注意一下_withCommit的实现，判断store state改变是否基于commit, 
   //resetStoreVM中通过深度watch:$$state改变时看commmiting的状态判断是不是commit修改
-  this._withCommit(() => {
+  this._withCommit(() =&gt; {
     entry.forEach(function commitIterator (handler) {
       handler(payload)
     })
   })
   // commit完成之后再调用订阅事件
-  this._subscribers.forEach(sub => sub(mutation, this.state))
+  this._subscribers.forEach(sub =&gt; sub(mutation, this.state))
 
   if (
-    process.env.NODE_ENV !== 'production' &&
-    options && options.silent
+    process.env.NODE_ENV !== 'production' &amp;&amp;
+    options &amp;&amp; options.silent
   ) {
     console.warn(
       `[vuex] mutation type: ${type}. Silent option has been removed. ` +
@@ -194,12 +181,12 @@ commit (_type, _payload, _options) {
   this._committing = committing
 }
 
-```
+</code></pre>
 
-### dispatch实现
-还记得上一节我们曾留下一个疑问：Action通常是异步的，我们如何知道action什么时候该结束呢？我们如何才能组合多个Action? 看dispatch的实现我们就知道vuex是如何处理这个过程的。
+<h3 id="dispatch实现">dispatch实现</h3>
+<p>还记得上一节我们曾留下一个疑问：Action通常是异步的，我们如何知道action什么时候该结束呢？我们如何才能组合多个Action? 看dispatch的实现我们就知道vuex是如何处理这个过程的。</p>
 
-```js
+<pre><code class="language-js">
 
-
-```
+</code></pre>
+:ET
