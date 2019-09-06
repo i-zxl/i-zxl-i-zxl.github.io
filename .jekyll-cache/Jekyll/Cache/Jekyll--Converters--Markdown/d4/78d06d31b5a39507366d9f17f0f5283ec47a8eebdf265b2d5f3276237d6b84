@@ -1,0 +1,8 @@
+I"`<p>Elasticsearch 是一个分布式、可扩展、实时的搜索与数据分析引擎。</p>
+
+<p>在接下来的学习中我们通过学习一些有趣而且深入的话题来了解Elasticsearch内部实现机制，比如说： <a href="https://www.elastic.co/guide/cn/elasticsearch/guide/current/distributed-cluster.html">集群内的原理</a>、<a href="https://www.elastic.co/guide/cn/elasticsearch/guide/current/distributed-docs.html">分布式文档存储</a>、<a href="https://www.elastic.co/guide/cn/elasticsearch/guide/current/distributed-search.html">执行分布式检索</a>、<a href="https://www.elastic.co/guide/cn/elasticsearch/guide/current/inside-a-shard.html">分片内部原理</a>。</p>
+
+<h2 id="学习资料">学习资料</h2>
+<p><a href="https://www.elastic.co/guide/cn/elasticsearch/guide/current/intro.html">官方中文文档</a></p>
+
+:ET

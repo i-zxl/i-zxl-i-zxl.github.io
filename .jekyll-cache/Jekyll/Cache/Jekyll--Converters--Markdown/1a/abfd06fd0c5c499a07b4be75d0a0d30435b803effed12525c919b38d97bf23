@@ -1,14 +1,6 @@
----
-layout: post
-title: "Vuex store源码分析"
-date: 2019-09-04 15:00:00
-categories: Thriller Comedy Horror
----
+I"u<p>vuex 的 github ，入口文件展示给我们的就是核心Store和常用的工具方法，</p>
 
-vuex 的 github ，入口文件展示给我们的就是核心Store和常用的工具方法，
-
-```js
-export default {
+<pre><code class="language-js">export default {
     Store,
     install,
     version: '__VERSION__',
@@ -19,18 +11,16 @@ export default {
     createNamespacedHelpers
 }
 
-```
-# vuex挂载
+</code></pre>
+<h1 id="vuex挂载">vuex挂载</h1>
 
-vuex 是通过插件的方式将vuex实例挂载到vue上，
-```js
-  Vue.use(Vuex);
-```
+<p>vuex 是通过插件的方式将vuex实例挂载到vue上，</p>
+<pre><code class="language-js">  Vue.use(Vuex);
+</code></pre>
 
-install 中vue 1.x 和 2.x 注入store方式稍微有点区别：1.x 使用init，2.x使用vue混入方式,在beforeCreate生命周期中影响每个组件。
+<p>install 中vue 1.x 和 2.x 注入store方式稍微有点区别：1.x 使用init，2.x使用vue混入方式,在beforeCreate生命周期中影响每个组件。</p>
 
-```js
-
+<pre><code class="language-js">
 // 这个函数实现保证将store影响到每个组件，并且保证store的唯一性，进行集中托管
 function vuexInit () {
 
@@ -41,22 +31,21 @@ function vuexInit () {
         ? options.store()
         : options.store
     // 非root 时获取父组件的$store给当前组建的$store
-    } else if (options.parent && options.parent.$store) {
+    } else if (options.parent &amp;&amp; options.parent.$store) {
       this.$store = options.parent.$store
     }
   }
 
-```
+</code></pre>
 
-# Store 
+<h1 id="store">Store</h1>
 
-进入store文件，我们看一下状态管理类Store的实现
+<p>进入store文件，我们看一下状态管理类Store的实现</p>
 
-```js
-export class Store {
+<pre><code class="language-js">export class Store {
   constructor (options = {}) {
     // 如果之前没有挂载到Vue, 自动挂载一次
-    if (!Vue && typeof window !== 'undefined' && window.Vue) {
+    if (!Vue &amp;&amp; typeof window !== 'undefined' &amp;&amp; window.Vue) {
       install(window.Vue)
     }
 
@@ -124,7 +113,7 @@ export class Store {
     // 同时挂载Getter到计算属性
     resetStoreVM(this, state)
     // apply plugins
-    plugins.forEach(plugin => plugin(this))
+    plugins.forEach(plugin =&gt; plugin(this))
 
     const useDevtools = options.devtools !== undefined ? options.devtools : Vue.config.devtools
     // 将vuex数据变化展示到vue-devtools
@@ -135,5 +124,6 @@ export class Store {
   ... 
 }
 
-```
+</code></pre>
 
+:ET
