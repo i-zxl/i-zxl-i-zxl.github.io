@@ -1,0 +1,90 @@
+I"�<p>集中管理vue程序中所有组建的状态，并且以一种可预测的方式更新状态。维持数据单向流动。</p>
+
+<h2 id="vuex解决了什么问题">Vuex解决了什么问题？</h2>
+
+<p>熟悉vue开发的同学都知道，首先，多个视图依赖同一状态，传参对于层层嵌套的组件来说无疑是一个非常繁琐的操作，并且兄弟组件之间状态无法传递，导致项目无法维护；其次，同一个状态在不同视图之间修改，我们通常采用父子组件之间传递和事件来传递或者变更，也会导致我们项目无法维护。
+vuex通过定义和隔离状态管理中的概念，并且通过强制的规则维持视图和状态之间的独立性，使我们的模块结构化可维护。</p>
+
+<h2 id="vuex核心概念">Vuex核心概念</h2>
+
+<h3 id="state">State</h3>
+
+<p>Vuex 使用单一状态树，用一个对象就包含了全部的应用层级状态，至此它便作为一个“唯一数据源 (SSOT)”而存在。</p>
+
+<h3 id="getter">Getter</h3>
+
+<p>有时候我们需要从 store 中的 state 中派生出多个视图公用的状态，我们可以将getter理解为vuex的计算属性。</p>
+
+<h3 id="mutation">Mutation</h3>
+
+<p>提交mutation是vuex中唯一更改state状态方式。每个mutation都有一个type和一个handler, handler是提交vuex中state的地方。视图中通过commit传递参数，即mutaition的payload(荷载)。</p>
+
+<p>mutation规则：</p>
+<ol>
+  <li>
+    <p>最好提前在你的 store 中初始化好所有所需属性。</p>
+  </li>
+  <li>
+    <p>当需要在对象上添加新属性时，你应该</p>
+
+    <ul>
+      <li>
+        <p>使用 Vue.set(obj, ‘newProp’, 123), 或者</p>
+      </li>
+      <li>
+        <p>以新对象替换老对象。例如，利用 stage-3 的对象展开运算符我们可以这样写：</p>
+        <pre><code class="language-js">  state.obj = {
+      ...state.obj,
+      type: 'mutation'
+  }
+</code></pre>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>mutation回调函数必须是同步函数，执行同步事物</p>
+  </li>
+</ol>
+
+<h3 id="action">Action</h3>
+
+<p>Action类似于mutation, 接收一个与store具有相同方法和属性的context对象。
+Action用来提交mutation， 并不是直接更改state状态；Action可用包涵任意的异步操作。</p>
+
+<p>问题： Action通常是异步的，我们如何知道action什么时候该结束呢？我们如何才能组合多个Action?
+关于这个问题，可以先🤔🤔，我们将在后边dispatch实现的时候在说这个问题。</p>
+
+<h3 id="插件">插件</h3>
+
+<p>Vuex 的 store 接受 plugins 选项，这个选项暴露出每次 mutation 的钩子。Vuex 插件就是一个函数，它接收 store 作为唯一参数：</p>
+<pre><code class="language-js">// plugin
+const myPlugin = store =&gt; {
+  // 当 store 初始化后调用
+  store.subscribe((mutation, state) =&gt; {
+    // 每次 mutation 之后调用
+    // mutation 的格式为 { type, payload }
+  })
+}
+// entry.js
+const store = new Vuex.Store({
+  plugins: [myPlugin]
+})
+
+</code></pre>
+
+<p>插件的使用场景，在我们针对页面中操作模块数据进行埋点，这会有很好的使用空间，这跟vue-router钩子函数进行页面埋点类似。</p>
+
+<h3 id="严格模式">严格模式</h3>
+
+<p>当开启严格模式时，设置 strict: true, 任何不适mutation函数引起的状态变更，将会抛出异常。</p>
+
+<h3 id="双向绑定的计算属性">双向绑定的计算属性</h3>
+
+<p>当在严格模式中使用 Vuex 时，在属于 Vuex 的 state 上使用 v-model 会比较棘手。用“Vuex 的思维”去解决这个问题的方法是：给 input 中绑定 value，然后侦听 input 或者 change 事件，在事件回调中调用 action
+另一种方式是使用setter的双向绑定属性。</p>
+
+<p>问题：如何利用setter的双向绑定属性，封装一个相对通用的双向绑定工具函数？</p>
+
+<p>以上就是vuex一些核心内容的介绍，后续我们将通过源码来逐步分析。</p>
+
+:ET
