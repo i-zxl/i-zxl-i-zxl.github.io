@@ -6,6 +6,7 @@ markdown: kramdown
 highlighter: pygments
 logo: false
 paginate: 15
+icon: "/assets/images/icon.png"
 baseurl: /
 domain_name: 'http://i-zxl.github.io/'
 google_analytics: 'UA-XXXXXXXX-X'
