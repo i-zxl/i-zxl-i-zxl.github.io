@@ -1,4 +1,4 @@
-I"l<p>javacript 是单线程执行的，因此在执行一些网络操作，浏览器事件的时候，我们必须采用异步的方式。异步函数可以由回调函数实现：</p>
+I"L<p>javacript 是单线程执行的，因此在执行一些网络操作，浏览器事件的时候，我们必须采用异步的方式。异步函数可以由回调函数实现：</p>
 
 <pre><code class="language-js">function cb () {
   console.log('this is cb');
@@ -42,7 +42,7 @@ console.log('this is main thread')
   })
   console.log(a)
 </code></pre>
-<p>当出现这种代码的时候，我们的代码执行时间是不可控的，肯能会出现提前调用。</p>
+<p>当出现这种代码的时候，我们的代码执行时间是不可控的，可能会出现提前调用。</p>
 
 <ul>
   <li>太晚调用或根本没有调用</li>
@@ -144,7 +144,11 @@ console.log('this is main thread')
  ...
 </code></pre>
 
-<h2 id="promise的api">Promise的API</h2>
+<h2 id="promise">Promise</h2>
+
+<p>Promise.prototype.then 和 Promise.prototype.catch都返回Promise对象，这样就可以实现链式调用。</p>
+
+<p><img src="/assets/images/promises.png" width="100%" height="400px" alt="promise流程图" align="center" /></p>
 
 <h2 id="如何手动实现一个简单的promise">如何手动实现一个简单的Promise</h2>
 

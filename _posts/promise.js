@@ -66,8 +66,8 @@ class Promise {
         return this.then(null, err);
     }
     _handleNextTick() {
-        debugger
         try {
+             // 赋值很重要，存储上一个promise的结果
             if (this._promiseStatus === State.resolving && typeof this._fn === 'function') {
                 this._resolveValue = this._fn.call(this, this._resolveValue);
             } else if (this._promiseStatus === State.rejecting && typeof this._err === 'function') {
