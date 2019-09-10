@@ -5,76 +5,108 @@
 
 const State = {
     pending: "pengding",
-    resolving: "fulfilled",
-    rejecting: "rejected"
+    resolving: "resolving",
+    rejecting: "rejecting",
+    resolved: "fulfilled",
+    rejected: "rejected",
 }
 
-const nextTick = (fn) => {
-
+function nextTick (func) {
+    setTimeout(func)
 }
 
 class Promise {
     constructor (resolver) {
-        this._promiseStatus = "pending";
-        this._rejectReason = "";
-        this._resoleValue = "";
-        if(typeof resolver !== 'function' && resolver !== undefined) {
-            throw new Error();
-        }
+        this._promiseStatus = State.pending;
+        this._rejectReason = ""; 
+        this._resolveValue = "";
+        this._fn = undefined;
+        this._err = undefined;
+        this._next = [];
         const promise = this;
-        const { resolve, reject } = this;
-        this.resolve = function boundResolve (value) {
-            return resolve.call(promise, value);
-        }
-        this.reject = function BoundReject (reason) {
-            return reject.call(promise, reason);
-        }
-        try {
-            resolver(this.resolve, this.reject)
-        } catch (err) {
-            this.reject(err);
+        if (typeof resolver === 'function' && resolver !== undefined) {
+            try {
+                resolver(this.resolve.bind(promise), this.reject.bind(promise))
+            } catch (err) {
+                this.reject(err);
+            }
         }
         
     }
     resolve (value) {
         if (this._promiseStatus === State.pending) {
-            this._value = value;
+            this._resolveValue = value;
             this._promiseStatus = State.resolving;
-            nextTick(this._nextTickHandler.bind(this))
+            nextTick(this._handleNextTick.bind(this))
         }
         return this
     }
     reject (reason) {
         if (this._promiseStatus === State.pending) {
-            this._rejectReason = value;
+            this._rejectReason = reason;
             this._promiseStatus = State.resolving;
-            nextTick(this._nextTickHandler.bind(this))
+            nextTick(this._handleNextTick.bind(this))
         }
         return this
     }
-    then (fn, err?) {
-        const promise = new Promise();
-        promise.fn = fn;
-        promise.err = err;
-        if(this._promiseStatus === State.resolving) {
-            promise.resolve(this._resoleValue);
-        } else if (this._promiseStatus === State.rejecting) {
-            promise.reject(this._rejectReason);
+    then (fn, err) {
+        const nextPromise = new Promise();
+        nextPromise._fn = fn;
+        nextPromise._err = err;
+        if(this._promiseStatus === State.resolved) {
+            nextPromise.resolve(this._resolveValue);
+        } else if (this._promiseStatus === State.rejected) {
+            nextPromise.reject(this._rejectReason);
         } else {
-            this._next.push(promise);
+            this._next.push(nextPromise);
         }
-        return promise;
+        return nextPromise;
     }
     catch (err) {
         return this.then(null, err);
     }
-    _nextTickHandler() {
-
+    _handleNextTick() {
+        debugger
+        try {
+            if (this._promiseStatus === State.resolving && typeof this._fn === 'function') {
+                this._resolveValue = this._fn.call(this, this._resolveValue);
+            } else if (this._promiseStatus === State.rejecting && typeof this._err === 'function') {
+                this._resolveValue = this._fn.call(this, this._rejectReason);
+            }
+        } catch (e) {
+            this._promiseStatus = State.rejecting;
+        }
+        if (this._resolveValue === this) {
+            this.state = State.rejecting;
+            this._rejectReason = new Error('next promise 指向 current promise');
+            this._promiseStatus = ""
+        }
+        this._finishThisPromise()
+    }
+    // 结束当前promise，并且调用下个Promise
+    _finishThisPromise() {
+        if (this._promiseStatus === State.resolving) {
+            this._promiseStatus = State.resolved;
+            this._next.map((nextPromise) => {
+                nextPromise.resolve(this._resolveValue);
+            });
+        } else if(this._promiseStatus === State.rejecting) {
+            this._promiseStatus = State.rejected;
+            this._next.map((nextPromise) => {
+                nextPromise.reject(this._rejectReason);
+            });
+        }
     }
 }
 
 var p = new Promise((resolve, reject) => {
-
+    resolve('hello promise')
+})
+p.then(data => {
+    console.log(data);
+    return "sssss"
+}).then((s) => {
+    console.log(s)
 })
 
 // promise/A+规范
