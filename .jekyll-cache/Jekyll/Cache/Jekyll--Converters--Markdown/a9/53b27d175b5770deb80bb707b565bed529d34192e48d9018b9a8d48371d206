@@ -1,0 +1,83 @@
+I"�<p>javacript 是单线程执行的，因此在执行一些网络操作，浏览器事件的时候，我们必须采用异步的方式。异步函数可以由回调函数实现：</p>
+
+<pre><code class="language-js">function cb () {
+  console.log('this is cb');
+}
+setTimeout(cb, 100);
+console.log('this is main thread')
+</code></pre>
+
+<p>首先会先输出：this is main thread, 其次在经过100ms之后输出： this is cb</p>
+
+<p>在我们的日常开发中过度依赖回调函数会带来什么影响呢？</p>
+
+<ol>
+  <li>我们是无法在主程序中对回调函数具有控制权的。例如：</li>
+</ol>
+
+<pre><code class="language-js">
+  ajax('xxxx', function (err, data) {
+
+  })
+
+</code></pre>
+<p>因为在ajax的调用是发生在现在的，这是在主程序的控制之下的，但是ajax的回调是延迟的，发生在未来的某个时刻，并不是在当前主程序之中，这中情况被称作<b>控制反转</b></p>
+
+<ul>
+  <li>回调会导致我们的程序出现过早调用。</li>
+</ul>
+
+<pre><code class="language-js">  function pre (cb) {
+    if (!a) {
+      cb('error');
+    }
+    ajax('xxxx', function(err, data) {
+      cb(err, data)
+    })
+  }
+
+  var a = 'a'
+  pre(function(err, data) {
+    a = data
+  })
+  console.log(a)
+</code></pre>
+<p>当出现这种代码的时候，我们的代码执行时间是不可控的，肯能会出现提前调用。</p>
+
+<ul>
+  <li>太晚调用或根本没有调用</li>
+</ul>
+
+<pre><code class="language-js">  function pre (cb) {
+    if (a) {
+      ajax('xxxx', function(err, data) {
+        cb(err, data)
+      })
+    }
+  }
+</code></pre>
+<p>当a不存在时，调用pre函数时回调根本就没有调用，因为主程序失去了对回调的控制权。</p>
+
+<h2 id="什么是promise">什么是promise？</h2>
+
+<p>1.首先Promise是一个可以包含异步操作的对象</p>
+
+<p>2.其次， 这个对象拥有自己的状态（state），可以分别用来表示异步操作的“成功”, “失败”，“正在进行中”。
+它们是：
+  Fulfilled： 成功
+  Rejected：拒绝
+  Pending： 进行中</p>
+
+<p>3.那怎么控制这三个状态的改变呢？
+当new 一个Promise对象的时候， 我们能接收到两个方法参数： resolve和reject, 当调用 resolve方法的时候，会把Promise对象的状态从Pending变为Fulfilled（表示异步操作成功了），当调用 reject方法的时候， 会把Promise对象的状态从Pending变为Rejected，表示异步操作失败了， 而如果这两个函数没有调用，则Promise对象的状态一直是Pending（表示异步操作正在进行）</p>
+
+<h2 id="promise解决什么问题">promise解决什么问题？</h2>
+
+<h2 id="promise用法">Promise用法</h2>
+
+<h2 id="如何手动实现一个简单的promise">如何手动实现一个简单的Promise</h2>
+
+<h2 id="学习连接">学习连接</h2>
+<p><a href="https://www.cnblogs.com/penghuwan/p/7451409.html">csdn</a>
+<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise">mdn</a></p>
+:ET

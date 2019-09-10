@@ -1,4 +1,4 @@
-I","<p>vuex 的 github ，入口文件展示给我们的就是核心Store和常用的工具方法，</p>
+I""<p>vuex 的 github ，入口文件展示给我们的就是核心Store和常用的工具方法，</p>
 
 <pre><code class="language-js">export default {
     Store,
@@ -244,7 +244,7 @@ dispatch (_type, _payload) {
 </code></pre>
 
 <h2 id="收获">收获</h2>
-<p>在vuex目前看到的使用最多的方式是,创建一个类，类属性能中this指向能保持一直只想当前对象实例而且不被外部影响的方式，后续如果我们有自己的开源东西的话，可以学习一下这种写法。</p>
+<p>在vuex目前看到的使用最多的方式是,类属性能中this指向能保持一直指向当前对象实例而且不被外部影响的方式，后续如果我们有自己的开源东西的话，可以学习一下这种写法。</p>
 <pre><code class="language-js">
 //比如
 this.dispatch = function bindDispatch (type, payload) {
