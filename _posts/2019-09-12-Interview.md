@@ -11,7 +11,10 @@ categories:
 
 从m*n的方格中到最右下共有多少中走法（动态规划法）
 
-webpack style-loader和css-loader的用法和区别
+webpack 每个loader的作用
+style-loader和css-loader的用法和区别
+url-loader 
+file-loader
 
 css 样式优先级排序, 以及权重计算
 
@@ -23,6 +26,8 @@ var let const 的区别
 
 null 和 undefined 的区别
 
+箭头函数和普通函数的区别
+
 http 、https 和 http2的了解
 
 浏览器渲染原理及执行过程，以及一些性能优化方案。
@@ -30,3 +35,4 @@ http 、https 和 http2的了解
 vue双向绑定原理
 
 高阶函数的输入和输出，以及用法
+
