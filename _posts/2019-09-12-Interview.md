@@ -87,9 +87,10 @@ const merge = (list) => {
 
 ```
 
-面试官给的提示是可以通过在第一种的基础上比较相邻两个时间节点，其实这样写也是可以的，但是时间复杂度相对来说要高一些，不是很理想，我按照面试后的提示还是写了一个实现。这就不贴代码了。
+面试官给的提示是可以通过在第一种的基础上比较相邻两个时间节点，其实这样写也是可以的，我按照面试后的提示还是写了一个实现。这就不贴代码了。
 
 ```js
+
 const check = (list) => {
     const result = [], len = list.length;
     // 得到一个顺序的时间区间
@@ -133,12 +134,113 @@ const check = (list) => {
 ## 二面
 
 1. 节流函数
-    - 在指定时间内只能允许调用一次
+    - 在指定时间内只能允许调用一次。这跟一面一样，先来抛砖引玉，后边难度再进入正题。
+
     ```js
 
+    const log = () => {
+        console.log('hello world');
+    }
+
+    const throttle = (fn, delay) => {
+        let status = "pendding", timer = null;
+        return (...args) => {
+            if(start === "pedding") {
+                start = "doing"
+                timer = setTimeout(() => {
+                    fn(args)
+                    status = "pendding"
+                    clearTimeout(timer)
+                }, delay)
+            }
+            
+        }
+    }
+
+    const tr = throttle(log, 1000)
+    tr()
+    tr()
+    tr()
+    tr()
+    tr()
+    tr()
+    tr()
+
     ```
-    - 在指定时间内最多能执行n次
+    这个题我当时写的答案是如下，定义一个标记状态，如果是处于这个状态当中，则不予执行。
+
+    ```js
+        const throttle = (fn, delay) => {
+            let status = "pendding", timer = null;
+            return (...args) => {
+                if(status === "pedding") {
+                    status = "doing"
+                    timer = setTimeout(() => {
+                        fn(args)
+                        status = "pendding"
+                        clearTimeout(timer)
+                    }, delay)
+                }
+                
+            }
+        }
+    ```
+
+    通过这个题还可以衍生出另一道题目：我只执行最后一次的执行结果。
+    我们把上边的结果改改就行
+
+    ```js
+
+        const throttle = (fn, delay) => {
+            let timer = null;
+            return (...args) => {
+                clearTimeout(timer)
+                timer = setTimeout(() => {
+                    fn(args)
+                }, delay)
+            }
+        }
+
+    ```
+
+    - 在指定时间内最多能执行n次。这个当时想的是引入时间变量和计数器。但是没想好时间节点怎么控制。写了一个while循环来控制
+
+    ```js
+
+    const throttle = (fn, delay, max) => {
+        let timer = 0, num = 0;
+        setTimeout(() => {
+            timer = delay;
+            num = 1
+        }, delay)
+        return (...args) => {
+            if(num < max && timer < delay) {
+                fn(...args)
+                num++ 
+            }
+        }
+    }
+
+    ```
+
     - 衍生出的场景问题：降低查询频次， 在200毫秒内只能执行一次请求。控制渲染时序，后请求的必须在后渲染。
+
+    ```js
+
+    onInputChange((keyworld) => {
+        search(keyworld, (list) => {
+            render(list)
+        })
+    })
+
+    
+
+    ```
+
+    这种场景在我们开发过程当中是十分常见的场景，不仅能够降低我们在查询时候因为input输入造成频繁请求资源浪费的问题，而且能够降低因为网络或者接口原因导致页面渲染错误概率。
+
+
+    
 
 2. http 、https 和 http2的了解
 
