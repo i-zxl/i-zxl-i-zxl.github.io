@@ -1,0 +1,7 @@
+---
+layout: post
+title:  "nodejs 进程间通信"
+date:   2019-09-13
+categories: js nodejs events EventEmitter
+---
+大多数 Node.js 核心 API 构建于惯用的异步事件驱动架构，其中某些类型的对象（又称触发器，Emitter）会触发命名事件来调用函数（又称监听器，Listener）。
