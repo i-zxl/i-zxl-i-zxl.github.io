@@ -151,18 +151,7 @@ const check = (list) => {
     }
 
     const throttle = (fn, delay) => {
-        let status = "pendding", timer = null;
-        return (...args) => {
-            if(start === "pedding") {
-                start = "doing"
-                timer = setTimeout(() => {
-                    fn(args)
-                    status = "pendding"
-                    clearTimeout(timer)
-                }, delay)
-            }
-            
-        }
+
     }
 
     const tr = throttle(log, 1000)
@@ -216,13 +205,13 @@ const check = (list) => {
     ```js
 
     const throttle = (fn, delay, max) => {
-        let timer = 0, num = 0;
-        setTimeout(() => {
-            timer = delay;
-            num = 1
+        let num = 0;
+        /* 使用setInterval控制时间线，在下个时间线内，清空请求次数*/
+        setInterval(() => {
+            num = 0
         }, delay)
         return (...args) => {
-            if(num < max && timer < delay) {
+            if(num < max ) {
                 fn(...args)
                 num++ 
             }
@@ -246,7 +235,8 @@ const check = (list) => {
     这种场景在我们开发过程当中是十分常见的场景，不仅能够降低我们在查询时候因为input输入造成频繁请求资源浪费的问题，而且能够降低因为网络或者接口原因导致页面渲染错误概率。
     
     ```js
-        // 针对题目中的调用方式我们可以简单改改，
+        
+
         const currentRequestId = 0;
         const throttle = (delay) => {
             let status = "pendding", timer = null;
@@ -285,7 +275,7 @@ const check = (list) => {
         const render = (data) => {
             if(data.requestId > currentRequestId) {
                 currentRequestId = data.requestId;
-                doRender(data);
+                doRender(data.list);
             }
         }
 
