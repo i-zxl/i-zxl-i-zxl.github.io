@@ -485,6 +485,11 @@ margin on the iframe, cause it breaks stuff. */
 .main-header .inner {
     width: 80%;
 }
+.main-header-nav {
+    margin: 0;
+    padding: 0;
+    
+}
 .main-header-nav li{
     list-style: none;
 }
@@ -693,9 +698,8 @@ margin on the iframe, cause it breaks stuff. */
 }
 
 .no-cover.main-header {
-    height: 60px;
     background: #f5f8fa;
-
+    height: 10%;
 }
 
 .no-cover .page-title {
