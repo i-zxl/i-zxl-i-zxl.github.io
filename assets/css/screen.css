@@ -482,6 +482,12 @@ margin on the iframe, cause it breaks stuff. */
     overflow: hidden;
 }
 
+.flex-main-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .main-header .inner {
     width: 80%;
 }
