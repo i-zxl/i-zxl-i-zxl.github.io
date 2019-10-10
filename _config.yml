@@ -3,7 +3,7 @@ description: 赵兴来的博客
 meta_description: ""
 
 markdown: kramdown
-highlighter: pygments
+highlighter: rouge
 logo: false
 paginate: 15
 icon: "/assets/images/icon.png"

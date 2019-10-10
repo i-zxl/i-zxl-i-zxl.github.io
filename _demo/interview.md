@@ -84,7 +84,7 @@ var str = "2019-03-06T21:01:13 Tencent/Beijing"
 str.match(/\d+/g) //["2019","03","06","21","01","13"]
 
 ```
-
+\s: 匹配空白字符
 \d: 匹配数字
 [a-zA-Z]: 匹配字符
 +: 重复一次或者多次
@@ -94,6 +94,9 @@ str.match(/\d+/g) //["2019","03","06","21","01","13"]
 前瞻、后顾、负前瞻、负后顾
 
 ```js
+
+//非空正则：
+/\s*\S/
 
 // 前瞻：
 exp1(?=exp2)  // 查找exp2前面的exp1
@@ -146,7 +149,130 @@ throttle(); //参数自行添加
 
 }
 
-7、深浅复制有什么区别？ 如何实现Object的深复制（无需考虑JSON对象合法性）？ ES6中的扩展运算符和Object.assign分别属于深复制还是浅复制
+7、深浅复制有什么区别？ 如何实现Object的深复制（无需考虑JSON对象合法性）？ 
+深浅复制的主要区别是在内存中的存储类型不同
+基本数据类型（undefined，boolean，number，string，null）
+  栈是系统自动分配的内存空间，由系统自动释放。
+  - 基本的数据类型存放在栈中，存放在栈中的简单数据段，数据大小确定，内存空间大小可以分配，是直接按值存放的，所以可以直接访问。
+  - 基本数据类型值不变。
+
+  ```js
+
+    var str = "abc";
+    str[0] = 'd';
+    console.log(str) // abc
+
+  ```
+  - 基本类型的比较是值的比较
+
+  ```js
+
+  var a = 1;
+  var b = 2;
+  a === b;
+
+  ```
+  堆是动态分配的内存空间，大小不定，也不会自动释放。
+
+引用类型（Object、Array）
+
+- 引用类型存放在堆中，变量实际存放的是栈内存中指向堆内存中的地址指针。
+- 引用类型要根据情况分配堆内存大小
+- 引用类型值可变
+
+```js
+
+var b = [1, 3, 4];
+b[1] = 5
+b[2] = 6
+b //[1, 5, 6]
+
+```
+
+- 引用类型的比较是引用的比较
+
+```js
+
+var a = [1, 2]
+var b = [1, 2]
+a === b // false
+// 两个对象的比较，比较的栈内存中引用的比较。
+```
+
+传值与传址
+
+传值：基本数据类型中的赋值（=）, 是在栈内存中开辟内存空间，并将值存储到内存空间。
+传址：引用类型的赋值是传址。只是改变指针的指向。
+
+```js
+// 传值： 
+var a = 10;
+var b = a;
+
+a++
+console.log(a); // 11
+console.log(b); // 10
+
+// 传址
+var obj = {
+  name: 1,
+}
+var foo = obj;
+var bar = foo;
+
+foo.value = 2;
+console.log(obj, foo, bar) // 三个 {name: 1, value: 2}  
+
+```
+
+浅拷贝：只对对象属性进行一次拷贝
+
+```js
+
+ var obj1 = {
+        'name' : 'zhangsan',
+        'age' :  '18',
+        'language' : [1,[2,3],[4,5]],
+    };
+
+    var obj2 = obj1;
+
+
+    var obj3 = shallowCopy(obj1);
+    function shallowCopy(src) {
+        var dst = {};
+        for (var prop in src) {
+            if (src.hasOwnProperty(prop)) {
+                dst[prop] = src[prop];
+            }
+        }
+        return dst;
+    }
+
+    obj2.name = "lisi";
+    obj3.age = "20";
+
+    obj2.language[1] = ["二","三"];
+    obj3.language[2] = ["四","五"];
+
+    console.log(obj1);  
+    //obj1 = {
+    //    'name' : 'lisi',
+    //    'age' :  '18',
+    //    'language' : [1,["二","三"],["四","五"]],
+    //};
+
+    console.log(obj2);
+    //源对象改变，会影响拷贝对象
+
+
+```
+
+
+
+ES6中的扩展运算符和Object.assign分别属于深复制还是浅复制
+
+扩展运算符和Object.assign实现的是浅拷贝，只拷贝自身的属性。
 
 8、目前 JS 对于异步的解决方案有哪些， 如何实现依赖多个异步返回（实现一个函数获取由多个数据源组成的表格数据，要求其中即使有一次或多次失败并不会阻塞其它请求）
 
@@ -235,7 +361,99 @@ https://juejin.im/post/5ac34810f265da23870f0748
 Vue
 1、vue-router导航钩子有哪些及其使用场景
 
+- 全局钩子
+
+```js
+
+  // 全局前置守卫 进入路由之前
+  router.beforeEach(to, from, next) {
+    next()
+  }
+  // 全局后置钩子 进入路由之后
+  router.afterEach(to, from, next) {
+
+  }
+  // 解析首位
+  router.beforeResolve(to, from, next) {
+    //区别是在导航被确认之前，同时在所有组件内守卫和异步路由组件被解析之后，解析守卫就被调用
+  }
+
+
+```
+- 路由独享守卫, 在router配置中
+
+```js 
+
+const router = new VueRouter({
+  routes: [
+    {
+      path: '/foo',
+      component: Foo,
+      beforeEnter: (to, from, next) => { 
+        // 参数用法什么的都一样,调用顺序在全局前置守卫后面，所以不会被全局守卫覆盖
+        // ...
+      }
+    }
+  ]
+})
+
+```
+
+组件守卫：
+
+```js
+
+export default {
+  data() {
+
+  },
+  beforeRouteEnter(to, from, next) {
+    // 不能访问 this
+    // 但是可以通过给next设置回调来访问this
+    next(vm => {
+      
+    })
+  },
+  beforeRouteUpdate(to, from, next) {
+    //在动态路由情形下，比如 path: '/user/:userName'，
+    //当页面不变更只动态的改变参数userName时，beforeRouteUpdate便会触发。
+    // 可以访问this
+
+  },
+  beforeRouteLeave(to, from, next) {
+    // 导航离开该组件的对应路由时调用
+    // 可以访问this
+  }
+}
+
+```
+
+完整的路由导航解析流程(不包括其他生命周期)：
+
+触发进入其他路由。
+调用要离开路由的组件守卫beforeRouteLeave
+调用局前置守卫：beforeEach
+在重用的组件里调用 beforeRouteUpdate
+调用路由独享守卫 beforeEnter。
+解析异步路由组件。
+在将要进入的路由组件中调用beforeRouteEnter
+调用全局解析守卫 beforeResolve
+导航被确认。
+调用全局后置钩子的 afterEach 钩子。
+触发DOM更新(mounted)。
+执行beforeRouteEnter 守卫中传给 next 的回调函数
+
+
 2、改变状态（数据源）的方式有哪些
+
+```js
+
+// 不会更新视图
+this.data.name = "xxxx"
+// 会触发视图的更新
+this.$set(this.data, 'name', 'xxxx')
+
+```
 
 3、页面首次加载会触发哪几个钩子？ 哪些钩子在服务器端渲染期间会出现？ loading事件，发送请求分别应该在哪个周期实现
 
