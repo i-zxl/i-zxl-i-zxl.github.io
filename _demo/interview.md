@@ -225,56 +225,68 @@ console.log(obj, foo, bar) // 三个 {name: 1, value: 2}
 
 ```
 
-浅拷贝：只对对象属性进行一次拷贝
+浅拷贝：只对对象属性进行一次拷贝，不拷贝对象中的子对象。
 
 ```js
 
- var obj1 = {
-        'name' : 'zhangsan',
-        'age' :  '18',
-        'language' : [1,[2,3],[4,5]],
-    };
+let obj1 = {
+  'name' : 'jacob',
+  'age' :  '15',
+  'value' : [1,[2,3],[4,5]],
+};
 
-    var obj2 = obj1;
+let obj2 = obj1;
 
-
-    var obj3 = shallowCopy(obj1);
-    function shallowCopy(src) {
-        var dst = {};
-        for (var prop in src) {
-            if (src.hasOwnProperty(prop)) {
-                dst[prop] = src[prop];
-            }
-        }
-        return dst;
+let obj3 = shallowCopy(obj1);
+function shallowCopy(src) {
+  let dst = {};
+  for (var prop in src) {
+    if (src.hasOwnProperty(prop)) {
+      dst[prop] = src[prop];
     }
+  }
+  return dst;
+}
+obj2.name = "lisa";
+obj3.age = "24";
+obj2.value[1] = ["二","三"];
+obj3.value[2] = ["四","五"];
+console.log(obj1, obj2, obj3);
+// obj1 和 obj2 输出：
+/*
+  {
+    name: 'lisa',
+    age: 15,
+    value: [1, ["二","三"], ["四","五"]]
+  }
+*/
 
-    obj2.name = "lisi";
-    obj3.age = "20";
-
-    obj2.language[1] = ["二","三"];
-    obj3.language[2] = ["四","五"];
-
-    console.log(obj1);  
-    //obj1 = {
-    //    'name' : 'lisi',
-    //    'age' :  '18',
-    //    'language' : [1,["二","三"],["四","五"]],
-    //};
-
-    console.log(obj2);
-    //源对象改变，会影响拷贝对象
-
+// obj3 输出：
+/*
+  {
+    name: 'jabob',
+    age: 24,
+    value: [1, ["二","三"], ["四","五"]]
+  }
+*/
 
 ```
+根据之前的介绍：
+obj2.name = "lisa"; obj3.age = "24"; 这两个操作是基础类型赋值操作，属于传值；value 在栈内存中存的是堆内存的引用，所以value进行操作的时候会更改堆内存中的值，并不影响指针指向。
+
+深拷贝: 拷贝对象的所有属性和子对象，对象修改不会相互影响。
+
+如何实现深拷贝？
 
 
+ES6中的扩展运算符和Object.assign分别属于深复制还是浅复制? 浅拷贝
 
-ES6中的扩展运算符和Object.assign分别属于深复制还是浅复制
-
-扩展运算符和Object.assign实现的是浅拷贝，只拷贝自身的属性。
 
 8、目前 JS 对于异步的解决方案有哪些， 如何实现依赖多个异步返回（实现一个函数获取由多个数据源组成的表格数据，要求其中即使有一次或多次失败并不会阻塞其它请求）
+
+callback
+promise
+async/await
 
 9、下面这个段代码执行会有问题吗？如果没有问题控制台打印出的结果是什么？
 
