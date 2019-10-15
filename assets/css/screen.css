@@ -705,7 +705,7 @@ margin on the iframe, cause it breaks stuff. */
 
 .no-cover.main-header {
     background: #f5f8fa;
-    height: 10%;
+    height: auto !important;
 }
 
 .no-cover .page-title {

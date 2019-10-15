@@ -109,6 +109,47 @@ p.then(data => {
     console.log(s)
 })
 
+
+
+
+const curry = (fn, arg) => {
+    let len = fn.length;
+    arg = arg || [];
+    return (...rest) => {
+        arg = arg.concat(rest);
+        if(arg.length > len) {
+        return fn(...arg);
+        } else {
+        return curry(fn, arg)
+        }
+    }
+}
+
+Promise.prototype.all = function (all) {
+    return new Promise((resolve, reject) => {
+      if(!Array.isArray(all)) {
+        throw "must array";
+      }
+      let len = all.length, count = 1, result = [];
+      var curryResolve = curry(function resolveDone(result, allPromiseCount, donePromiseCount, index) {
+        return function(value) {
+          result[index] = value
+          if(++count === len) {
+            resolve(result);
+          }
+        }
+      })
+      var allresolve = curryResolve(result, len, count);
+      for(let index = 0; index < len; index++) {
+        if(all[index] instanceof Promise === false) {
+            Promise.resolve(all[index]).then(allresolve(index), reject)
+        } else{
+            all[index].then(allresolve(index), reject);
+        }
+      }
+    })
+  }
+
 // promise/A+规范
 //https://cloud.tencent.com/developer/article/1351114?from=10680
 
