@@ -74,6 +74,18 @@ includes: 判断数组中是否包含某个元素， 返回boolean。
 
 3、求两个数组的并集，差集，补集（提示，使用集合）
 
+```js
+
+var a1 = new Set([1,2,3,4]);
+var a2 = new Set([2,3,4,5]);
+
+var all = new Set([...a1, ...a2]); // 并集
+var x1 = new Set([...a1].filter(x => a2.has(x))) // 交集
+var x2 = new Set([...a1].filter(x => !a2.has(x))) // 补集
+
+```
+
+
 4、正则表达式
 
 请从2019-03-06T21:01:13 Tencent/Beijing提取出结果["2019","03","06","21","01","13"]
@@ -84,6 +96,7 @@ var str = "2019-03-06T21:01:13 Tencent/Beijing"
 str.match(/\d+/g) //["2019","03","06","21","01","13"]
 
 ```
+. : 匹配除换行符之外的所有字符
 \s: 匹配空白字符
 \d: 匹配数字
 [a-zA-Z]: 匹配字符
@@ -312,6 +325,42 @@ git fetch和git pull的区别；git add 过程中误操作添加了不想提交�
 
 3、对AMD和Commonjs的理解
 
+CommonJS 规范是为了解决作用域问题而定义的模块形式，模块的代码在他的命名空间中执行，保证每个模块具有独立的上下文，必须通过module.exports 导出对外的变量和接口，通过require来导入其他模块输出到当前的上下文。
+CommonJS 是同步加载模块的
+
+AMD 是异步加载模块管理规范，这种规范实现的是依赖前置，预加载模块
+模块通过 define 函数定义在闭包中，格式如下：
+define(id?: string, dependencies?: string[], factory: Function|Object);
+id: 模块名称
+dependencies: 依赖前置
+factory: 模块上下文， 如果是函数，函数的返回就是模块的输出
+
+//模块化输出
+define('myModule', ['./a.js'], function (a) {
+  const say = () {
+    alert('hello world')
+  }
+  return say
+})
+
+require('myModule', function(myModule) {
+  myModule()
+})
+
+定义一个没有id的模块，通常用作应用的启动函数
+define(['myModule'], function (myModule) {
+  myModule()
+})
+
+在模块内部定义依赖, AMD也可以实现内部依赖方式
+define(function(require) {
+  let $ = require('jquery');
+  $('body').text('hello world');
+})
+
+CMD 和 AMD 规范基本相似，AMD推崇依赖前置，CMD推崇依赖就近
+
+
 4、模版解析思路和常见方法，vue怎么做template编译
 
 5、webpack解析过程，从命令行运行npm run xxx 之后都发生了什么
@@ -377,7 +426,7 @@ Vue
 
 ```js
 
-  // 全局前置守卫 进入路由之前
+  // 全局前置钩子 进入路由之前
   router.beforeEach(to, from, next) {
     next()
   }
@@ -385,7 +434,7 @@ Vue
   router.afterEach(to, from, next) {
 
   }
-  // 解析首位
+  // 解析守卫
   router.beforeResolve(to, from, next) {
     //区别是在导航被确认之前，同时在所有组件内守卫和异步路由组件被解析之后，解析守卫就被调用
   }
@@ -507,6 +556,19 @@ event.publish('Message', {data: ['foo,', 'bar']});
 
 2、linux常用命令：查看内存／硬盘使用情况，解压压缩等
 
+查看硬盘的使用情况： df -h 
+查看某个目录下磁盘占用情况：du -h /home/worker/_logs/ --max-depth 1
+查找某个文件并删除： find ~/code -name "my-file*" | xargs rm -f
+压缩和解压：tar
+必要参数：
+-z 支持gzip解压文件
+-c 建立新的压缩文件
+-v 显示操作过程
+-x 从压缩的文件中提取文件
+选择参数：
+-f 
+-C
+
 3、内存溢出一般是哪些原因导致，有哪些分析方法，如何获取内存快照
 
 4、相比 Express 谈谈 Koa 中间件模型的优势, context对象
@@ -523,9 +585,50 @@ https://juejin.im/post/5b827cbbe51d4538c021f2da
 
 Ngnix反向代理，负载均衡，开多个进程，绑定多个端口；（多台机器的水平扩展）
 
+ngnix 常用配置：
+
+// 配置进程数， 一般用cpu内核数
+worker_process CPUs;
+
+// 用来指定ngnix工作模式
+events {
+  // 用来指定每个进程的最大请求数， 默认1024
+  worker_connections 1024;
+}
+// 负责 http 服务器的所有配置
+http {
+  //  
+
+  upstream myproject {
+    server 127.0.0.1:8080;
+    server 127.0.0.2:8080;
+    server 127.0.0.4:8080;
+  }
+
+  server {
+    listen 80;
+    location / {
+      proxy_pass http://myproject;
+    }
+  }
+}
+
+
+
 http://marklin-blog.logdown.com/posts/2050778
 
 开多个进程监听同一个端口，使用cluster模块；（同一台机器的垂直扩展）
+
+pm2 中 processes.json 中配置集群模式，pm2 可以通过cpu内核开启多进程，监控同一个服务；
+
+exec_mode: "cluster"
+
+命令模式：pm2 start app.js -i 4
+
+基于 nodejs cluster 集群模块横向扩展的简单实现。
+
+
+进程之间通信方式：事件， sockit, redis发布订阅模式
 
 http://marklin-blog.logdown.com/posts/2046547-scalability-of-node-using-cluster
 
@@ -539,3 +642,41 @@ https://github.com/ElemeFE/node-interview/tree/master/sections/zh-cn
 1、hybrid和h5区别，与客户端如何交互，发版管理，性能优化
 
 2、jsbridge常用方法，安卓和iOS的区别
+
+
+
+toutiao
+
+webpack 工作原理
+依赖是如何收集的？
+vue 双向绑定的原理。
+v-model的实现是怎么样的？
+vue3.0 哪些新的用法？有了解么？
+vue现在版本 依赖关系是怎么收集的？
+自己平时有实践过哪些新技术？有作品吗？
+
+单点登录设计（sso） // 水滴和58都问过
+设计一个脚手架，有什么思路？
+手写轮播图？
+
+实现下边 
+bus.bind('A', function() {
+  console.log('A');
+}).bind('B', function() {
+  console.log('B');
+})
+bus.toggle('A') // A
+bus.toggle('B') // B
+
+通过cluster设计类似pm2管理(每个公司都在问)
+
+如何扩展服务稳定性
+
+实现网页计算器：两数相加（考察浮点数精度问题，精度位数和大数据下加法问题）
+
+
+
+
+
+
+
