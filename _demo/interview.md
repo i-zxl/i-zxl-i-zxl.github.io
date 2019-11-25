@@ -313,7 +313,28 @@ console.log(new CarBuild())
 
 10、call, apply, bind的区别，实现bind的方法
 
+call: 临时修改this指向，用法：参数逐一接收单个参数，当第一个参数为null, undefined时，指向window, 并执行函数；
+apply: 临时修改this指向， 用法：第一个参数是指向的this对象，当参数为null, undefined时，指向window, 第二个参数接收数组；并执行函数；
+bind: 修改this指向，用法: 第一个参数时指向this的对象，当参数为null, undefined时指向window, 第二个参数开始，传递给bind, 并返回一个更改了上下文的函数， 不会立即执行。
+
+手动版call的实现：
+
+```js
+
+function callSimple(...rest) {
+  const constructer = rest[0] ? rest[0] : window ? window : global;
+  const arg = rest.slice(1);
+  
+}
+
+```
+
+标准盒模型和怪异盒模型：
+
+
+
 11、重排和重绘的触发时机，有哪些css属性能触发GPU
+
 
 
 前端工程化构建
@@ -641,6 +662,7 @@ https://github.com/ElemeFE/node-interview/tree/master/sections/zh-cn
 移动端开发
 1、hybrid和h5区别，与客户端如何交互，发版管理，性能优化
 
+
 2、jsbridge常用方法，安卓和iOS的区别
 
 
@@ -673,10 +695,6 @@ bus.toggle('B') // B
 如何扩展服务稳定性
 
 实现网页计算器：两数相加（考察浮点数精度问题，精度位数和大数据下加法问题）
-
-
-
-
 
 
 
