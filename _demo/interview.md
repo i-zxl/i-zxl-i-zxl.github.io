@@ -414,7 +414,7 @@ import React from "react";
 
 import ReactDOM from "react-dom";
 
-const image =  <img src='http://img1.gtimg.com/13/1390/139050/13905006_980x1200_281.jpg' />
+const image =  <img src='' />
 
 const Wrap = (props) => {
 
